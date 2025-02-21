@@ -31,9 +31,11 @@ else:
         u_name = input('Enter username: ')
         u_pwd = getpass('Enter password: ')
 
+        hashed_name = bcrypt.hashpw(u_name.encode('utf-8'), bcrypt.gensalt())
+
         cursor = connection.cursor()
         query = "SELECT u_pass FROM login WHERE u_name = %s"
-        cursor.execute(query, (u_name.encode('utf-8'),))
+        cursor.execute(query, (hashed_name,))
         result = cursor.fetchone()
 
         if result:
