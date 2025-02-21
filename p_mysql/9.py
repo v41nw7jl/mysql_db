@@ -17,13 +17,12 @@ else:
         u_name = input('Enter username: ')
         u_pwd = getpass('Enter password: ')
 
-        # Encrypt the username and password
-        hashed_name = bcrypt.hashpw(u_name.encode('utf-8'), bcrypt.gensalt())
+        # Encrypt the password only
         hashed_pwd = bcrypt.hashpw(u_pwd.encode('utf-8'), bcrypt.gensalt())
 
         cursor = connection.cursor()
         query = "INSERT INTO login (u_name, u_pass) VALUES (%s, %s)"
-        cursor.execute(query, (hashed_name, hashed_pwd))
+        cursor.execute(query, (u_name, hashed_pwd))
         connection.commit()
         print("User registered successfully")
 
@@ -31,11 +30,9 @@ else:
         u_name = input('Enter username: ')
         u_pwd = getpass('Enter password: ')
 
-        hashed_name = bcrypt.hashpw(u_name.encode('utf-8'), bcrypt.gensalt())
-
         cursor = connection.cursor()
         query = "SELECT u_pass FROM login WHERE u_name = %s"
-        cursor.execute(query, (hashed_name,))
+        cursor.execute(query, (u_name,))
         result = cursor.fetchone()
 
         if result:
