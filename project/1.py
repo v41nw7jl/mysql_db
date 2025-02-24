@@ -41,10 +41,35 @@ def create_table():
     input("Press Enter to continue...\n")     # asking user i/p to move to main menu
 
 def insert_values():
-    print('Insert Values')
+    table_name = input("Enter the name of the table: ")
+    cursor.execute(f"DESCRIBE {table_name}")
+    table_description = cursor.fetchall()
+    num_fields = len(table_description)
+
+    values = []
+    for i in range(num_fields):
+        field_name = table_description[i][0]
+        value = input(f"Enter the value for {field_name}: ")
+        values.append(value)
+    insert_values_sql = f"INSERT INTO {table_name} VALUES ("
+    for i in range(num_fields):
+        insert_values_sql += f"%s"
+        if i < num_fields - 1:
+            insert_values_sql += ", "
+    insert_values_sql += ")"
+
+    cursor.execute(insert_values_sql, values)
+    db.commit()
+    print(f"Values inserted into table {table_name} successfully!")
+    input("Press Enter to continue...\n")     # asking user i/p to move to main menu
 
 def view_details():
-    print('View Details')
+    table_name = input("Enter the name of the table: ")
+    cursor.execute(f"SELECT * FROM {table_name}")
+    results = cursor.fetchall()
+    for row in results:
+        print(row)
+    input("Press Enter to continue...\n")     # asking user i/p to move to main menu
 
 def list_tables():
     cursor.execute("SHOW TABLES")
