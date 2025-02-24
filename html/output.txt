@@ -1,0 +1,10 @@
+.
+├── cgi-bin
+│   └── validate_login.py
+├── home.html
+├── html
+│   ├── login.html
+│   └── styles.css
+└── output.txt
+
+2 directories, 5 files
