@@ -22,7 +22,7 @@ def create_table():
     for i in range(n_fields):       # using loop to enter details of field.
         field_name = input(f"Enter the name of field {i+1}: ")
         print('Only use either of Data Type : INT, VARCHAR(255)')
-        data_type = input(f"Enter the data type of field {i+1} : ")
+        data_type = get_data_type()
         fields.append((field_name, data_type))
 
     # creating a sql query using loop and storing value into a variable for execution.
@@ -38,29 +38,53 @@ def create_table():
     db.commit()
     
     print(f"Table : {t_name} , created successfully!")
-    input("Press Enter to continue...\n")     # asking user i/p to move to main menu
+    input("Press Enter to continue...\n")       # asking user i/p to move to main menu
 
-def insert_values():
-    table_name = input("Enter the name of the table: ")
-    cursor.execute(f"DESCRIBE {table_name}")
+def get_data_type():                            # validating the data type while creating table coloumns
+    valid_types = ["INT", "VARCHAR(255)"]
+    while True:
+        data_type = input("Enter the data type (INT/VARCHAR(255)): ").strip().upper()
+        if data_type in valid_types:
+            return data_type
+        print("Invalid data type! Please enter INT or VARCHAR(255).")
+
+def insert_values():    
+    cursor.execute("SHOW TABLES")               # Get list of tables
+    tables = cursor.fetchall()
+
+    print("Select a table to insert values:")   # Display list of tables
+    for i, table in enumerate(tables, start=1):
+        print(f"{i}. {table[0]}")
+
+    while True:                                 # Ask user to select a table
+        try:
+            choice = int(input("Enter the number of your choice: "))
+            if 1 <= choice <= len(tables):
+                break
+            else:
+                print("Invalid choice. Please try again.")
+        except ValueError:
+            print("Invalid input. Please enter a number.")
+
+    t_name = tables[choice - 1][0]              # Get the selected table name
+
+    cursor.execute(f"DESCRIBE {t_name}")        # Rest of the function remains the same
     table_description = cursor.fetchall()
     num_fields = len(table_description)
-
     values = []
     for i in range(num_fields):
         field_name = table_description[i][0]
         value = input(f"Enter the value for {field_name}: ")
         values.append(value)
-    insert_values_sql = f"INSERT INTO {table_name} VALUES ("
+    insert_values_sql = f"INSERT INTO {t_name} VALUES ("
     for i in range(num_fields):
         insert_values_sql += f"%s"
         if i < num_fields - 1:
             insert_values_sql += ", "
     insert_values_sql += ")"
-
     cursor.execute(insert_values_sql, values)
     db.commit()
-    print(f"Values inserted into table {table_name} successfully!")
+    print(f"Values inserted into table : {t_name} successfully!")
     input("Press Enter to continue...\n")     # asking user i/p to move to main menu
 
 def view_details():
