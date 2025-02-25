@@ -46,7 +46,7 @@ def get_data_type():                            # validating the data type while
         data_type = input("Enter the data type (INT/VARCHAR(255)): ").strip().upper()
         if data_type in valid_types:
             return data_type
-        print("Invalid data type! Please enter INT or VARCHAR(255).")
+        print("\n++++++++++++Invalid data type! Please enter INT or VARCHAR(255).++++++++++++")
 
 def insert_values():    
     cursor.execute("SHOW TABLES")               # Get list of tables
